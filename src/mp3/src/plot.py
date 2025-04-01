@@ -11,15 +11,15 @@ import matplotlib.pyplot as plt
 
 # Load the heading error data
 heading_file_paths = [
-    "heading_errors_1500_1.npy",
-    "heading_errors_1500_2.npy",
-    "heading_errors_1500_3.npy"
+    "heading_errors_limit_25_1.npy",
+    "heading_errors_limit_25_2.npy",
+    "heading_errors_limit_25_3.npy"
 ]
 
 position_file_paths = [
-    'position_errors_1500_1.npy',
-    'position_errors_1500_2.npy',
-    'position_errors_1500_3.npy'
+    'position_errors_limit_25_1.npy',
+    'position_errors_limit_25_2.npy',
+    'position_errors_limit_25_3.npy'
     ]
 
 # Load and stack all error arrays
@@ -36,7 +36,7 @@ average_error_2 = np.mean(errors_stacked_2, axis=0)
 # Plotting the average error
 fig, axs = plt.subplots(1,2,figsize = (14,5))
 
-test_name = 'Particles_1000'
+test_name = 'limits_25'
 
 title = 'Average Heading Error in '+test_name
 title_2 = 'Average Position Error in '+test_name
