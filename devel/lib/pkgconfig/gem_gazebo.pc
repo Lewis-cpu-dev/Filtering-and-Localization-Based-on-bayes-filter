@@ -1,0 +1,8 @@
+prefix=/home/ziyir2/Desktop/mp-release-sp25/devel
+
+Name: gem_gazebo
+Description: Description of gem_gazebo
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

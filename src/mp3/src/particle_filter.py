@@ -36,8 +36,8 @@ class particleFilter:
 
 
             ## first quadrant
-            # x = 
-            # y =
+            # x = np.random.uniform(world.width / 2, world.width)
+            # y = np.random.uniform(world.height / 2, world.height)
 
             particles.append(Particle(x = x, y = y, maze = world, sensor_limit = sensor_limit))
 
@@ -77,7 +77,7 @@ class particleFilter:
             rospy.loginfo("Service did not process request: "+str(exc))
         return modelState
 
-    def weight_gaussian_kernel(self,x1, x2, std = 5000):
+    def weight_gaussian_kernel(self,x1, x2, std = 9000):
         if x1 is None: # If the robot recieved no sensor measurement, the weights are in uniform distribution.
             return 1./len(self.particles)
         else:
@@ -96,9 +96,35 @@ class particleFilter:
 
         ## TODO #####
 
+        if readings_robot is None:
+        # No robot reading → uniform weights
+            for p in self.particles:
+                p.weight = 1.0 / self.num_particles
+            return
 
-        ###############
-        # pass
+        sigma = 2000.0 
+        total = 0 
+        for p in self.particles:
+            readings_particle = p.read_sensor()
+            # error = np.array(readings_robot) - np.array(readings_particle)
+            # prob = np.exp(-0.5 * (error**2 / sigma))
+            # # Multiply likelihoods across all directions
+            # weight = np.sum(prob)
+            # p.weight = weight
+            # for i in range(len(readings_particle)):
+            p.weight = self.weight_gaussian_kernel(readings_robot,readings_particle,sigma)
+                 
+        # Normalize weights
+            total +=p.weight
+        if total > 0:
+            for p in self.particles:
+                p.weight /= total
+        else:
+            for p in self.particles:
+                p.weight = 1.0 / self.num_particles
+
+            ###############
+            # pass
 
     def resampleParticle(self):
         """
@@ -108,11 +134,29 @@ class particleFilter:
         particles_new = list()
 
         ## TODO #####
-        
-
-        ###############
+        weights = [p.weight for p in self.particles]
+        indices = list(range(len(self.particles)))
+        cumsum = np.cumsum(weights)
+        step = 1.0 / self.num_particles
+        r = random.uniform(0, step)
+        i = 0
+        for m in range(self.num_particles):
+            u = r + m * step
+            while u > cumsum[i]:
+                i += 1
+            new_p = Particle(
+                x=self.particles[i].x,
+                y=self.particles[i].y,
+                heading=self.particles[i].heading,
+                maze=self.world,
+                sensor_limit=self.sensor_limit,
+                weight=1.0
+            )
+            particles_new.append(new_p)
 
         self.particles = particles_new
+
+
 
     def particleMotionModel(self):
         """
@@ -121,7 +165,23 @@ class particleFilter:
             You can either use ode function or vehicle_dynamics function provided above
         """
         ## TODO #####
-        
+        if not self.control:
+            return
+
+        control = self.control.pop(0)
+        vr = control[0]
+        delta = control[1]
+        dt = 0.1
+
+        for p in self.particles:
+            solver = ode(vehicle_dynamics).set_integrator('dopri5')
+            solver.set_initial_value([p.x, p.y, p.heading], 0)
+            solver.set_f_params(vr, delta)
+            sol = solver.integrate(dt)
+            p.x = sol[0]
+            p.y = sol[1]
+            p.heading = sol[2]
+            p.fix_invalid_particles()
 
         ###############
         # pass
@@ -132,8 +192,44 @@ class particleFilter:
         Description:
             Run PF localization
         """
-        count = 0 
-        while True:
+        count = 0
+        pos_errors = []
+        heading_errors = []
+        self.world.show_maze()
+        while not rospy.is_shutdown():
             ## TODO: (i) Implement Section 3.2.2. (ii) Display robot and particles on map. (iii) Compute and save position/heading error to plot. #####
             
-            ###############
+            ###############         
+            rospy.sleep(0.1)
+            self.particleMotionModel()
+            readings_robot = self.bob.read_sensor()
+            self.updateWeight(readings_robot)
+            self.resampleParticle()
+
+            # Visualize
+            self.world.clear_objects()
+            
+            self.world.show_particles(self.particles, show_frequency=5)
+            estimate = self.world.show_estimated_location(self.particles)
+            self.world.show_robot(self.bob)
+
+            # Log position and heading errors
+            if estimate:
+                actual_x, actual_y, actual_heading = self.bob.x, self.bob.y, self.bob.heading
+                est_x, est_y, est_heading = estimate
+
+                pos_error = np.sqrt((actual_x - est_x)**2 + (actual_y - est_y)**2)
+                heading_error = abs((actual_heading - np.deg2rad(est_heading)) % (2*np.pi))
+                if heading_error > np.pi:
+                    heading_error = 2*np.pi - heading_error
+
+                pos_errors.append(pos_error)
+                heading_errors.append(heading_error)
+
+            count += 1
+            if count >= 1000:  # Optional stop condition
+                break
+
+        # Save or return errors for plotting later
+        np.save("position_errors.npy", np.array(pos_errors))
+        np.save("heading_errors.npy", np.array(heading_errors))

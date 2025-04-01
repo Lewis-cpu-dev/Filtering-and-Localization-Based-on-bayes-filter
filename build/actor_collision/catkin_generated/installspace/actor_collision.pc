@@ -1,0 +1,8 @@
+prefix=/home/ziyir2/Desktop/mp-release-sp25/install
+
+Name: actor_collision
+Description: Description of actor_collision
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: roscpp gazebo_ros

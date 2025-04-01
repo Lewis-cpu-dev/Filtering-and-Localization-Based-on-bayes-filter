@@ -1,0 +1,8 @@
+prefix=/home/ziyir2/Desktop/mp-release-sp25/devel
+
+Name: mp2
+Description: Description of mp2
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

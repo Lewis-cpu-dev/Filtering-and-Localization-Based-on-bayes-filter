@@ -1,0 +1,8 @@
+prefix=/home/ziyir2/Desktop/mp-release-sp25/install
+
+Name: mp3
+Description: Description of mp3
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
