@@ -229,7 +229,7 @@ class particleFilter:
             if count >= 900:  # Optional stop condition
                 break
         
-        test_name = "_limit_25_3"
+        test_name = "Particles_1000_3"
         # Save or return errors for plotting later
         np.save("position_errors"+test_name+".npy", np.array(pos_errors))
         np.save("heading_errors"+test_name+".npy", np.array(heading_errors))
