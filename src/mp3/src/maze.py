@@ -318,7 +318,7 @@ class Particle(object):
 
         # Add random noise to the particle at initialization
         if noisy:
-            std = 0.05
+            std = 0.1
             self.x = self.add_noise(x = self.x, std = std)
             self.y = self.add_noise(x = self.y, std = std)
             self.heading = self.add_noise(x = self.heading, std = np.pi * 2 * 0.05)

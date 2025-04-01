@@ -31,13 +31,13 @@ class particleFilter:
         for i in range(num_particles):
 
             # (Default) The whole map
-            x = np.random.uniform(0, world.width)
-            y = np.random.uniform(0, world.height)
+            # x = np.random.uniform(0, world.width)
+            # y = np.random.uniform(0, world.height)
 
 
             ## first quadrant
-            # x = np.random.uniform(world.width / 2, world.width)
-            # y = np.random.uniform(world.height / 2, world.height)
+            x = np.random.uniform(world.width / 2, world.width)
+            y = np.random.uniform(world.height / 2, world.height)
 
             particles.append(Particle(x = x, y = y, maze = world, sensor_limit = sensor_limit))
 
@@ -102,7 +102,7 @@ class particleFilter:
                 p.weight = 1.0 / self.num_particles
             return
 
-        sigma = 2000.0 
+        sigma = 3000.0 
         total = 0 
         for p in self.particles:
             readings_particle = p.read_sensor()
@@ -171,7 +171,7 @@ class particleFilter:
         control = self.control.pop(0)
         vr = control[0]
         delta = control[1]
-        dt = 0.1
+        dt = 0.01
 
         for p in self.particles:
             solver = ode(vehicle_dynamics).set_integrator('dopri5')
