@@ -240,25 +240,25 @@ class LidarProcessing:
             cv2.arrowedLine(img, (self.vehicle_x,self.vehicle_y), center, (255,0,0))
         
         # Visualize sensor readings at 4 diagonal direction
-        center = self.convert_to_image(self.x_front_left, self.y_front_left)
-        cv2.circle(img, center, 5, (0,255,0), -1, 8, 0)
-        if not np.isnan(self.x_front_left) and not np.isnan(self.y_front_left):
-            cv2.arrowedLine(img, (self.vehicle_x,self.vehicle_y), center, (255,0,0))
+        # center = self.convert_to_image(self.x_front_left, self.y_front_left)
+        # cv2.circle(img, center, 5, (0,255,0), -1, 8, 0)
+        # if not np.isnan(self.x_front_left) and not np.isnan(self.y_front_left):
+        #     cv2.arrowedLine(img, (self.vehicle_x,self.vehicle_y), center, (255,0,0))
 
-        center = self.convert_to_image(self.x_rear_left, self.y_rear_left)
-        cv2.circle(img, center, 5, (0,255,0), -1, 8, 0)
-        if not np.isnan(self.x_rear_left) and not np.isnan(self.y_rear_left):
-            cv2.arrowedLine(img, (self.vehicle_x,self.vehicle_y), center, (255,0,0))
+        # center = self.convert_to_image(self.x_rear_left, self.y_rear_left)
+        # cv2.circle(img, center, 5, (0,255,0), -1, 8, 0)
+        # if not np.isnan(self.x_rear_left) and not np.isnan(self.y_rear_left):
+        #     cv2.arrowedLine(img, (self.vehicle_x,self.vehicle_y), center, (255,0,0))
 
-        center = self.convert_to_image(self.x_front_right, self.y_front_right)
-        cv2.circle(img, center, 5, (0,255,0), -1, 8, 0)
-        if not np.isnan(self.x_front_right) and not np.isnan(self.y_front_right):
-            cv2.arrowedLine(img, (self.vehicle_x,self.vehicle_y), center, (255,0,0))
+        # center = self.convert_to_image(self.x_front_right, self.y_front_right)
+        # cv2.circle(img, center, 5, (0,255,0), -1, 8, 0)
+        # if not np.isnan(self.x_front_right) and not np.isnan(self.y_front_right):
+        #     cv2.arrowedLine(img, (self.vehicle_x,self.vehicle_y), center, (255,0,0))
 
-        center = self.convert_to_image(self.x_rear_right, self.y_rear_right)
-        cv2.circle(img, center, 5, (0,255,0), -1, 8, 0)
-        if not np.isnan(self.x_rear_right) and not np.isnan(self.y_rear_right):
-            cv2.arrowedLine(img, (self.vehicle_x,self.vehicle_y), center, (255,0,0))
+        # center = self.convert_to_image(self.x_rear_right, self.y_rear_right)
+        # cv2.circle(img, center, 5, (0,255,0), -1, 8, 0)
+        # if not np.isnan(self.x_rear_right) and not np.isnan(self.y_rear_right):
+        #     cv2.arrowedLine(img, (self.vehicle_x,self.vehicle_y), center, (255,0,0))
         birds_eye_im = self.cvBridge.cv2_to_imgmsg(img, 'bgr8')
 
         self.birdsEyeViewPub.publish(birds_eye_im)
@@ -308,10 +308,10 @@ class LidarProcessing:
             rear_right = self.sensor_limit
         
         # 4 Directions
-        # return [front*100, right*100, rear*100, left*100]
+        return [front*100, right*100, rear*100, left*100]
         
         # 8 Directions
-        return [front*100, right*100, rear*100, left*100, front_left * 100, front_right * 100, rear_left*100, rear_right*100]
+        # return [front*100, right*100, rear*100, left*100, front_left * 100, front_right * 100, rear_left*100, rear_right*100]
 
 
         

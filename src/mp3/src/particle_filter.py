@@ -102,17 +102,17 @@ class particleFilter:
                 p.weight = 1.0 / self.num_particles
             return
 
-        sigma = 3000.0 
+        sigma = 5000.0 
         total = 0 
         for p in self.particles:
             readings_particle = p.read_sensor()
-            # error = np.array(readings_robot) - np.array(readings_particle)
-            # prob = np.exp(-0.5 * (error**2 / sigma))
-            # # Multiply likelihoods across all directions
-            # weight = np.sum(prob)
-            # p.weight = weight
+            error = np.array(readings_robot) - np.array(readings_particle)
+            prob = np.exp(-0.5 * (error**2 / sigma))
+            # Multiply likelihoods across all directions
+            weight = np.sum(prob)
+            p.weight = weight
             # for i in range(len(readings_particle)):
-            p.weight = self.weight_gaussian_kernel(readings_robot,readings_particle,sigma)
+            # p.weight = self.weight_gaussian_kernel(readings_robot,readings_particle,sigma)
                  
         # Normalize weights
             total +=p.weight
@@ -200,7 +200,7 @@ class particleFilter:
             ## TODO: (i) Implement Section 3.2.2. (ii) Display robot and particles on map. (iii) Compute and save position/heading error to plot. #####
             
             ###############         
-            rospy.sleep(0.1)
+            # rospy.sleep(0.1)
             self.particleMotionModel()
             readings_robot = self.bob.read_sensor()
             self.updateWeight(readings_robot)
@@ -208,7 +208,6 @@ class particleFilter:
 
             # Visualize
             self.world.clear_objects()
-            
             self.world.show_particles(self.particles, show_frequency=5)
             estimate = self.world.show_estimated_location(self.particles)
             self.world.show_robot(self.bob)
@@ -227,9 +226,12 @@ class particleFilter:
                 heading_errors.append(heading_error)
 
             count += 1
-            if count >= 1000:  # Optional stop condition
+            if count >= 900:  # Optional stop condition
                 break
-
+        
+        test_name = "_limit_25_3"
         # Save or return errors for plotting later
-        np.save("position_errors.npy", np.array(pos_errors))
-        np.save("heading_errors.npy", np.array(heading_errors))
+        np.save("position_errors"+test_name+".npy", np.array(pos_errors))
+        np.save("heading_errors"+test_name+".npy", np.array(heading_errors))
+        print("-------------------------------------------------------------")
+        print(f"{test_name} finished")

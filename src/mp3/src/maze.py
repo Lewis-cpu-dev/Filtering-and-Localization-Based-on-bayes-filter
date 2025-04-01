@@ -295,11 +295,11 @@ class Maze(object):
 
         # Return readings from sensor model in front, right, rear, left direction
         # 4 Directions
-        # return [d1*100, d2*100, d3*100, d4*100]
+        return [d1*100, d2*100, d3*100, d4*100]
 
         # front_left, front_right, rear_left, rear_right
         # 8 Directions
-        return [d1*100, d2*100, d3*100, d4*100, d5*100, d6*100, d7*100, d8*100]
+        # return [d1*100, d2*100, d3*100, d4*100, d5*100, d6*100, d7*100, d8*100]
 
 
 class Particle(object):
@@ -318,7 +318,7 @@ class Particle(object):
 
         # Add random noise to the particle at initialization
         if noisy:
-            std = 0.1
+            std = 0.05
             self.x = self.add_noise(x = self.x, std = std)
             self.y = self.add_noise(x = self.y, std = std)
             self.heading = self.add_noise(x = self.heading, std = np.pi * 2 * 0.05)
